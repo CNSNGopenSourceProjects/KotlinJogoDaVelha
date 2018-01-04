@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Kotlin Jogo da Velha</string>
+    <string name="reiniciar_o_jogo">Reiniciar o Jogo</string>
+</resources>
