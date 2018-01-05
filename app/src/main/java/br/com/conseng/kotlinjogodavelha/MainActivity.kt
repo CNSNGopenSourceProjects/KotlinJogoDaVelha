@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Button
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.view.*
 
 class MainActivity : AppCompatActivity() {
     /**
@@ -49,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         tabuleiro.add(btn8)
         tabuleiro.add(btn9)
 
-        btnRestart.setOnClickListener { iniciarJogo() }
+        btnRestart.setOnClickListener { reiniciarJogo() }
     }
 
     /**
@@ -59,8 +58,9 @@ class MainActivity : AppCompatActivity() {
      * Em caso de vitória, deixa as casas vitoriosas piscando.
      * @param [btnSelected] Jogada.
      */
-    fun play(btnSelected: Button) {
+    fun play(view: View) {
         var vitoria: Combinacao? = null
+        val btnSelected = view as Button
         val casa = whoAmI(btnSelected)
 
         when (currentPlayer) {
@@ -95,17 +95,17 @@ class MainActivity : AppCompatActivity() {
      * @param [ganhador] Aponta para o (eventua) vencedor do jogo.
      * @param [seq] Sequencia de casas da [Combinacao] vencedora.
      */
-    fun fimDeJogo(empatou: Boolean, ganhador: Button, seq:Combinacao?) {
+    fun fimDeJogo(empatou: Boolean, ganhador: Button, seq: Combinacao?) {
         for (botao in tabuleiro) {      // Bloqueia todos os botões
             botao.isClickable = false
             if (!empatou) {             // Deixa as casas vencedoras piscando
-                val casa = whoAmI(ganhador)
-                if ((casa>0) and seq?.contain(casa)!!) {
-                    ganhador.blink()    // Deixa a casa piscando
+                val casa = whoAmI(botao)
+                if ((casa > 0) and seq?.contain(casa)!!) {
+                    botao.blink()       // Deixa a casa piscando
                 }
             }
         }
-        val mensagem = if (empatou) "O jogo terminou empatado" else "O jogador %s ganhou!".format(ganhador.text.toString())
+        val mensagem = if (empatou) "O jogo terminou empatado" else "O jogador %s ganhou o jogo!".format(ganhador.text.toString())
         Toasted(mensagem)
     }
 
@@ -115,15 +115,10 @@ class MainActivity : AppCompatActivity() {
      *  - Desativa o pisca.
      *  - Ativa os botões.
      */
-    fun iniciarJogo() {
+    fun reiniciarJogo() {
         player_X.clear()
         player_O.clear()
-        for (botao in tabuleiro) {
-            botao.isClickable = true
-            botao.text = ""
-            botao.setBackgroundColor(ContextCompat.getColor(this, R.color.button_material_light))
-            botao.clearAnimation()
-        }
+        setContentView(R.layout.activity_main)      // Reinicializa a tela
         currentPlayer = Player.marca_X
         Toasted("Pronto para um novo jogo")
     }

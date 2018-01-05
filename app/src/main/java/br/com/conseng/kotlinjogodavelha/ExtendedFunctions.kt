@@ -20,7 +20,7 @@ import android.widget.Toast
  * @param [repeatMode] Modo de repetição.
  */
 fun View.blink(times: Int = Animation.INFINITE,
-               duration: Long = 50L, offset: Long = 20L,
+               duration: Long = 200L, offset: Long = 200L,
                minAlpha: Float = 0.0f, maxAlpha: Float = 1.0f,
                repeatMode: Int = Animation.REVERSE) {
     startAnimation(AlphaAnimation(minAlpha, maxAlpha).also {
