@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Kotlin Jogo da Velha</string>
     <string name="reiniciar_o_jogo">Reiniciar o Jogo</string>
+    <string name="jogo_terminou_empatado">O jogo terminou empatado</string>
+    <string name="jogo_terminou_com_vencedor">O jogador %s ganhou o jogo!</string>
+    <string name="jogar_novamente">Pronto para um novo jogo</string>
 </resources>

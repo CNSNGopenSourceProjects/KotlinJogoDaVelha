@@ -1,7 +1,7 @@
 package br.com.conseng.kotlinjogodavelha
 /**
  * Extende funcionalidades do Kotlin.
- * 20180104 [F.Camargo]: implementação inicial baseada em https://www.androidauthority.com/kotlin-extension-functions-811170/
+ * 20180104 F.Camargo: implementação inicial baseada em https://www.androidauthority.com/kotlin-extension-functions-811170/
  */
 
 import android.content.Context
@@ -11,7 +11,7 @@ import android.view.animation.Animation
 import android.widget.Toast
 
 /**
- * Extende a função de piscar para todas as views.
+ * Estende a função de piscar para todas as views.
  * @param [times] Número de vezes que deve piscar.  Default: [Animation.INFINITE]
  * @param [duration] Tempo em milisegundos que a view ficará "acesa".
  * @param [offset] Tempo em milisegundos que a view ficará "apagada".
@@ -42,11 +42,11 @@ fun View.show() { visibility = View.VISIBLE }
 fun View.hide() { visibility = View.GONE }
 
 /**
- * Extende a opção de mensagem para que fique mais simples de ser utilizada no programa. *
+ * Estende a opção de mensagem para que fique mais simples de ser utilizada no programa. *
  * @param [text]     The text to show.  Can be formatted text.
- * @param [duration] How long to display the message.  Default: [Toast.LENGTH_LONG]
+ * @param [duration] How long to display the message.  Default: "Toast.LENGTH_LONG"
  *
  */
-fun Context.Toasted(text: String, duration: Int = Toast.LENGTH_LONG) {
+fun Context.toast(text: String, duration: Int = Toast.LENGTH_LONG) {
     Toast.makeText(this, text, duration).show()
 }

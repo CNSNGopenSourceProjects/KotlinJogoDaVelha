@@ -11,27 +11,27 @@ class MainActivity : AppCompatActivity() {
     /**
      * Preserva os lances do jogador que marca X.
      */
-    val player_X = arrayListOf<Int>()
+    private val playerX = arrayListOf<Int>()
 
     /**
      * Preserva os lances do jogador que marca O.
      */
-    val player_O = arrayListOf<Int>()
+    private val playerO = arrayListOf<Int>()
 
     /**
      * Estabelece um padrão para identificar os jogadores.
      */
-    enum class Player { marca_X, marca_O }
+    enum class Player { X, O }
 
     /**
      * Identifica o jogador que jogará.
      */
-    var currentPlayer = Player.marca_X
+    private var currentPlayer = Player.X
 
     /**
      * Referencia todas as casas do tabuleiro
      */
-    val tabuleiro = ArrayList<Button>()
+    private val tabuleiro = ArrayList<Button>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
      * Atualiza o tabuleiro e impede que a casa utilizada uma segunda vez.
      * Verifica o status do jogo identificando o termino com vitória ou empate.
      * Em caso de vitória, deixa as casas vitoriosas piscando.
-     * @param [btnSelected] Jogada.
+     * @param [view] Jogada.
      */
     fun play(view: View) {
         var vitoria: Combinacao? = null
@@ -64,26 +64,25 @@ class MainActivity : AppCompatActivity() {
         val casa = whoAmI(btnSelected)
 
         when (currentPlayer) {
-            Player.marca_X -> {
+            Player.X -> {
                 btnSelected.text = "X"
                 btnSelected.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPlayerX))
-                player_X.add(casa)
-                currentPlayer = Player.marca_O
-                vitoria = checkResult(player_X)
+                playerX.add(casa)
+                currentPlayer = Player.O
+                vitoria = checkResult(playerX)
             }
-            Player.marca_O -> {
+            Player.O -> {
                 btnSelected.text = "O"
                 btnSelected.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPlayerO))
-                player_O.add(casa)
-                currentPlayer = Player.marca_X
-                vitoria = checkResult(player_O)
+                playerO.add(casa)
+                currentPlayer = Player.X
+                vitoria = checkResult(playerO)
             }
         }
         btnSelected.isClickable = false
         if (null != vitoria) {      // Alguém ganhou.  Termina o jogo.
-            //TODO: faz os botões vitoriosos piscarem
             fimDeJogo(false, btnSelected, vitoria)
-        } else if ((player_O.size + player_X.size) > 8) {   // Esgotou as jogadas?
+        } else if ((playerO.size + playerX.size) > 8) {   // Esgotou as jogadas?
             fimDeJogo(true, btnSelected, vitoria)
         }
     }
@@ -91,11 +90,11 @@ class MainActivity : AppCompatActivity() {
     /**
      * Sinaliza o fim do jogo mostrando uma mensagem e bloqueando todas as casas do tabuleiro.
      * Desativa todos os botões para impedir alterações no tabuleiro.
-     * @param [empatou] Indica se o jogo terminou empatado [true] ou com um vitorioso [false]
+     * @param [empatou] Indica se o jogo terminou empatado (true) ou com um vitorioso (false).
      * @param [ganhador] Aponta para o (eventua) vencedor do jogo.
      * @param [seq] Sequencia de casas da [Combinacao] vencedora.
      */
-    fun fimDeJogo(empatou: Boolean, ganhador: Button, seq: Combinacao?) {
+    private fun fimDeJogo(empatou: Boolean, ganhador: Button, seq: Combinacao?) {
         for (botao in tabuleiro) {      // Bloqueia todos os botões
             botao.isClickable = false
             if (!empatou) {             // Deixa as casas vencedoras piscando
@@ -105,8 +104,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        val mensagem = if (empatou) "O jogo terminou empatado" else "O jogador %s ganhou o jogo!".format(ganhador.text.toString())
-        Toasted(mensagem)
+        val mensagem = if (empatou) getString(R.string.jogo_terminou_empatado) else getString(R.string.jogo_terminou_com_vencedor).format(ganhador.text.toString())
+        toast(mensagem)
     }
 
     /**
@@ -115,12 +114,18 @@ class MainActivity : AppCompatActivity() {
      *  - Desativa o pisca.
      *  - Ativa os botões.
      */
-    fun reiniciarJogo() {
-        player_X.clear()
-        player_O.clear()
-        setContentView(R.layout.activity_main)      // Reinicializa a tela
-        currentPlayer = Player.marca_X
-        Toasted("Pronto para um novo jogo")
+    private fun reiniciarJogo() {
+        playerX.clear()
+        playerO.clear()
+        // Reinicializa a tela
+        for (casa in tabuleiro) {
+            casa.clearAnimation()
+            casa.text = ""
+            casa.isClickable = true
+            casa.setBackgroundColor(ContextCompat.getColor(this, R.color.colorBackgroundButton))
+        }
+        currentPlayer = Player.X
+        toast(getString(R.string.jogar_novamente))
     }
 
     /**
@@ -128,7 +133,7 @@ class MainActivity : AppCompatActivity() {
      * @param [view] Casa (botão) da jogada.
      * @return Casa no tabuleiro.
      */
-    fun whoAmI(view: View): Int = when (view.id) {
+    private fun whoAmI(view: View): Int = when (view.id) {
         R.id.btn1 -> 1
         R.id.btn2 -> 2
         R.id.btn3 -> 3
@@ -148,10 +153,10 @@ class MainActivity : AppCompatActivity() {
         /**
          * Verifica se ocorreu a combinação de jogadas.
          * @param [jogadas] Todas as jogadas de um jogador.
-         * @return [true] se a combinação foi encontrada.
+         * @return Se a combinação foi encontrada retorna "true".
          */
         fun contain(jogadas: ArrayList<Int>): Boolean {
-            var achou: Boolean = false
+            var achou = false
             if (jogadas.size >= 3) {
                 achou = jogadas.containsAll(listOf(pos1, pos2, pos3))
             }
@@ -161,15 +166,15 @@ class MainActivity : AppCompatActivity() {
         /**
          * Verifica se uma determinada casa do tabuleiro faz parte desta combinação.
          * @param [casa] Casa do tabuleiro a ser analisada [1~9].
-         * @return [true] se a [casa] pertence à esta combinação.
+         * @return Se a [casa] pertence à esta combinação, retorna "true".
          */
-        fun contain(casa: Int): Boolean = casa.equals(pos1) or casa.equals(pos2) or casa.equals(pos3)
+        fun contain(casa: Int): Boolean = (casa == pos1) or (casa == pos2) or (casa == pos3)
     }
 
     /**
      * Todas as comnicações vitoriozas do jogo.
      */
-    val combinacoes = listOf<Combinacao>(
+    private val combinacoes = listOf<Combinacao>(
             Combinacao(1, 2, 3),
             Combinacao(4, 5, 6),
             Combinacao(7, 8, 9),
@@ -182,9 +187,9 @@ class MainActivity : AppCompatActivity() {
     /**
      * Verifica se alguem ganhou o jogo, avaliando todos os possíveis resultados.
      * @param [jogadas] Lista de jogadas a ser analisada.
-     * @result Se não houve vitória, retorna [null]. Caso contrário, indica a sequencia vencedora [Combinacao].
+     * @result Se não houve vitória, retorna "null". Caso contrário, indica a sequencia vencedora [Combinacao].
      */
-    fun checkResult(jogadas: ArrayList<Int>): Combinacao? {
+    private fun checkResult(jogadas: ArrayList<Int>): Combinacao? {
         for (seq in combinacoes) {
             if (seq.contain(jogadas)) {
                 return seq
@@ -192,6 +197,4 @@ class MainActivity : AppCompatActivity() {
         }
         return null
     }
-
-
 }

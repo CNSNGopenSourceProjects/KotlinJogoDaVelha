@@ -6,4 +6,6 @@
 
     <color name="colorPlayerX">#FFCC04</color>
     <color name="colorPlayerO">#BED630</color>
+
+    <color name="colorBackgroundButton">#CCCCCC</color>
 </resources>
